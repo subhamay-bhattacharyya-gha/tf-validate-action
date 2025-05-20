@@ -1,51 +1,66 @@
-# GitHub Action Template Repository
+# GitHub Composite Action for Terraform Validate
 
-![Release](https://github.com/subhamay-bhattacharyya-gha/github-action-template/actions/workflows/release.yaml/badge.svg)&nbsp;![Commit Activity](https://img.shields.io/github/commit-activity/t/subhamay-bhattacharyya-gha/github-action-template)&nbsp;![Last Commit](https://img.shields.io/github/last-commit/subhamay-bhattacharyya-gha/github-action-template)&nbsp;![Release Date](https://img.shields.io/github/release-date/subhamay-bhattacharyya-gha/github-action-template)&nbsp;![Repo Size](https://img.shields.io/github/repo-size/subhamay-bhattacharyya-gha/github-action-template)&nbsp;![File Count](https://img.shields.io/github/directory-file-count/subhamay-bhattacharyya-gha/github-action-template)&nbsp;![Issues](https://img.shields.io/github/issues/subhamay-bhattacharyya-gha/github-action-template)&nbsp;![Top Language](https://img.shields.io/github/languages/top/subhamay-bhattacharyya-gha/github-action-template)&nbsp;![Custom Endpoint](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bsubhamay/06e35985280456b113298ed56c626e73/raw/github-action-template.json?)
+![Release](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/actions/workflows/release.yaml/badge.svg)&nbsp;![Commit Activity](https://img.shields.io/github/commit-activity/t/subhamay-bhattacharyya-gha/tf-validate-action)&nbsp;![Last Commit](https://img.shields.io/github/last-commit/subhamay-bhattacharyya-gha/tf-validate-action)&nbsp;![Release Date](https://img.shields.io/github/release-date/subhamay-bhattacharyya-gha/tf-validate-action)&nbsp;![Repo Size](https://img.shields.io/github/repo-size/subhamay-bhattacharyya-gha/tf-validate-action)&nbsp;![File Count](https://img.shields.io/github/directory-file-count/subhamay-bhattacharyya-gha/tf-validate-action)&nbsp;![Issues](https://img.shields.io/github/issues/subhamay-bhattacharyya-gha/tf-validate-action)&nbsp;![Top Language](https://img.shields.io/github/languages/top/subhamay-bhattacharyya-gha/tf-validate-action)&nbsp;![Custom Endpoint](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bsubhamay/bc727a7bfdc54056933718e073c39753/raw/tf-validate-action.json?)
 
-A Template GitHub Repository to be used to create a composite action.
-
-## Action Name
-
-### Action Description
-
-This GitHub Action provides a reusable composite workflow that sets up Python and interacts with the GitHub API to post a comment on an issue, including a link to a created branch.
+Validate Terraform configuration in your CI pipeline using this GitHub Composite Action. It checks for formatting and structural issues in Terraform files and provides a pass/fail output for workflow automation.
 
 ---
 
-## Inputs
+## 📘 Description
 
-| Name           | Description         | Required | Default        |
-|----------------|---------------------|----------|----------------|
-| `input-1`      | Input description.  | No       | `default-value`|
-| `input-2`      | Input description.  | No       | `default-value`|
-| `input-3`      | Input description.  | No       | `default-value`|
-| `github-token` | GitHub token. Used for API authentication. | Yes | — |
+This composite GitHub Action performs the following Terraform validation tasks:
+- Initializes Terraform (`terraform init`)
+- Checks code formatting (`terraform fmt`)
+- Validates configuration structure (`terraform validate`)
+- Provides visual feedback in the GitHub Actions summary
+- Can optionally continue even if validation fails (`soft-fail`)
 
 ---
 
-## Example Usage
+## 🔧 Inputs
+
+| Name                 | Description                                       | Required | Default |
+|----------------------|---------------------------------------------------|----------|---------|
+| `working-directory`  | Directory containing Terraform configuration files| No       | `.`     |
+| `soft-fail`          | Continue workflow even if validation fails        | No       | `false` |
+
+---
+
+## 📤 Outputs
+
+| Name    | Description                                 |
+|---------|---------------------------------------------|
+| `valid` | `true` if validation passed, `false` if not |
+
+---
+
+## ✅ Behavior
+
+- Fails the job if the Terraform code is not formatted or contains structural errors.
+- Sets a `valid` output variable for downstream steps.
+- Prints pass/fail messages in both console output and GitHub Actions summary.
+- Optionally continues on failure when `soft-fail: true`.
+
+---
+
+## 🚀 Usage
 
 ```yaml
-name: Example Workflow
-
-on:
-  issues:
-    types: [opened]
-
 jobs:
-  example:
+  tf-validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Run Custom Action
-        uses: your-org/your-action-repo@v1
+      - name: Run Terraform Validate
+        uses: subhamay-bhattacharyya-gha/tf-validate-action@main
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          input-1: your-value
-          input-2: another-value
-          input-3: something-else
+          working-directory: tf
+          soft-fail: false
+
+      - name: Display Status
+        run: |
+          echo "Validation Passed: ${{ steps.validate.outputs.valid }}"
 ```
 
 ## License

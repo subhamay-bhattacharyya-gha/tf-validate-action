@@ -1,44 +1,67 @@
-name: 'Action Name'
-description: 'Action Description'
+name: "Terraform Validate"
+description: A composite GitHub Action to check formatting and validate Terraform configuration.
 
 inputs:
-  input-1:
-    description: Input description.
+  working-directory:
+    description: Directory containing Terraform code
     required: false
-    default: default-value
-  input-2:
-    description: Input description.
+    default: "."
+  soft-fail:
+    description: Continue workflow even if validation fails
     required: false
-    default: default-value
-  input-3:
-    description: Input description.
-    required: false
-    default: default-value
-  github-token:
-    description: 'GitHub token'
-    required: true
+    default: "false"
+
+outputs:
+  valid:
+    description: "true if validation passed, false if failed"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.x
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
 
-    - name: Sample step to call GitHub API
+    - name: Terraform Init
+      run: terraform init -input=false
       shell: bash
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-      run: |
-        ISSUE_NUMBER="${{ github.event.issue.number }}"
-        REPO="${{ github.repository }}"
-        OWNER=$(echo $REPO | cut -d'/' -f1)
-        BRANCH_NAME="${{ steps.create-branch.outputs.branch-name }}"
-        COMMENT_BODY="Branch [$BRANCH_NAME](https://github.com/$OWNER/$REPO/tree/$BRANCH_NAME) created 🚀"
+      working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
 
-        curl -s -X POST \
-          -H "Authorization: token $GITHUB_TOKEN" \
-          -H "Content-Type: application/json" \
-          -d "{\"body\": \"$COMMENT_BODY\"}" \
-          https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER/comments
+    - name: Terraform FMT Check
+      id: fmt
+      run: |
+        set -e
+        if terraform fmt -check -recursive; then
+          echo "✅ Terraform FMT check passed"
+          echo "### ✅ Terraform FMT check passed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Terraform code is not properly formatted"
+          echo "### ❌ Terraform FMT check failed" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ inputs.soft-fail }}" == "true" ]]; then
+            echo "::warning::Terraform FMT failed (soft fail enabled)"
+          else
+            exit 1
+          fi
+        fi
+      shell: bash
+      working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
+
+    - name: Terraform Validate
+      id: validate
+      run: |
+        set -e
+        if terraform validate -no-color; then
+          echo "✅ Terraform validation passed"
+          echo "### ✅ Terraform validation passed" >> $GITHUB_STEP_SUMMARY
+          echo "valid=true" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Terraform validation failed"
+          echo "### ❌ Terraform validation failed" >> $GITHUB_STEP_SUMMARY
+          echo "valid=false" >> $GITHUB_OUTPUT
+          if [[ "${{ inputs.soft-fail }}" == "true" ]]; then
+            echo "::warning::Terraform validate failed (soft fail enabled)"
+          else
+            exit 1
+          fi
+        fi
+      shell: bash
+      working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
