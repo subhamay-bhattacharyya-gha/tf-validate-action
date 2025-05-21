@@ -22,13 +22,16 @@ runs:
       uses: hashicorp/setup-terraform@v3
 
     - name: Terraform Init
-      run: terraform init -input=false
       shell: bash
-      working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
+      run: |
+        cd "${{ inputs.working-directory }}"
+        terraform init -input=false
 
     - name: Terraform FMT Check
       id: fmt
+      shell: bash
       run: |
+        cd "${{ inputs.working-directory }}"
         set -e
         if terraform fmt -check -recursive; then
           echo "✅ Terraform FMT check passed"
@@ -42,12 +45,12 @@ runs:
             exit 1
           fi
         fi
-      shell: bash
-      working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
 
     - name: Terraform Validate
       id: validate
+      shell: bash
       run: |
+        cd "${{ inputs.working-directory }}"
         set -e
         if terraform validate -no-color; then
           echo "✅ Terraform validation passed"
@@ -63,5 +66,3 @@ runs:
             exit 1
           fi
         fi
-      shell: bash
-      working-directory: ${{ github.workspace }}/${{ inputs.working-directory }}
