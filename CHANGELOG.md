@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/compare/v1.0.0...v1.0.1) (2025-05-21)
+
+
+### Bug Fixes
+
+* Update Terraform action to use consistent working directory handling ([2a0052c](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/2a0052c1ccfa3f5170bf1ad2f3e38bf6e14936b8))
+
 # 1.0.0 (2025-05-20)
 
 
