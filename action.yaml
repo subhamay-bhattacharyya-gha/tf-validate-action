@@ -30,7 +30,7 @@ runs:
     - name: Terraform FMT Check
       id: fmt
       shell: bash
-      working-directory: "${{ inputs.terraform-dir }}"
+      working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
 
         set -e
@@ -50,7 +50,7 @@ runs:
     - name: Terraform Validate
       id: validate
       shell: bash
-      working-directory: "${{ inputs.terraform-dir }}"
+      working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
 
         set -e
