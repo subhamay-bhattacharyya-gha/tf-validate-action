@@ -23,16 +23,14 @@ runs:
 
     - name: Terraform Init
       shell: bash
-      run: |
-        cd "${{ inputs.working-directory }}"
-        terraform init -input=false
+      working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
+      run: terraform init -input=false
 
     - name: Terraform FMT Check
       id: fmt
       shell: bash
       working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
-
         set -e
         if terraform fmt -check -recursive; then
           echo "✅ Terraform FMT check passed"
@@ -52,9 +50,8 @@ runs:
       shell: bash
       working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
-
         set -e
-        terraform -init -input=false
+        terraform init -input=false
         if terraform validate -no-color; then
           echo "✅ Terraform validation passed"
           echo "### ✅ Terraform validation passed" >> $GITHUB_STEP_SUMMARY
@@ -63,6 +60,5 @@ runs:
           echo "❌ Terraform validation failed"
           echo "### ❌ Terraform validation failed" >> $GITHUB_STEP_SUMMARY
           echo "valid=false" >> $GITHUB_OUTPUT
-          ## Fail the action if Terraform validate fails
           exit 1
         fi
