@@ -2,7 +2,7 @@ name: "Terraform Validate"
 description: A composite GitHub Action to check formatting and validate Terraform configuration.
 
 inputs:
-  working-directory:
+  terraform-dir:
     description: Directory containing Terraform code
     required: false
     default: "."
@@ -30,17 +30,18 @@ runs:
     - name: Terraform FMT Check
       id: fmt
       shell: bash
+      working-directory: "${{ inputs.terraform-dir }}"
       run: |
-        cd "${{ inputs.working-directory }}"
+
         set -e
         if terraform fmt -check -recursive; then
           echo "✅ Terraform FMT check passed"
           echo "### ✅ Terraform FMT check passed" >> $GITHUB_STEP_SUMMARY
         else
           echo "❌ Terraform code is not properly formatted"
-          echo "### ❌ Terraform FMT check failed" >> $GITHUB_STEP_SUMMARY
+          echo "### ❌ Terraform fmt check failed" >> $GITHUB_STEP_SUMMARY
           if [[ "${{ inputs.soft-fail }}" == "true" ]]; then
-            echo "::warning::Terraform FMT failed (soft fail enabled)"
+            echo "::warning::Terraform fmt check failed (soft fail enabled)"
           else
             exit 1
           fi
@@ -49,8 +50,9 @@ runs:
     - name: Terraform Validate
       id: validate
       shell: bash
+      working-directory: "${{ inputs.terraform-dir }}"
       run: |
-        cd "${{ inputs.working-directory }}"
+
         set -e
         if terraform validate -no-color; then
           echo "✅ Terraform validation passed"
@@ -60,9 +62,6 @@ runs:
           echo "❌ Terraform validation failed"
           echo "### ❌ Terraform validation failed" >> $GITHUB_STEP_SUMMARY
           echo "valid=false" >> $GITHUB_OUTPUT
-          if [[ "${{ inputs.soft-fail }}" == "true" ]]; then
-            echo "::warning::Terraform validate failed (soft fail enabled)"
-          else
-            exit 1
-          fi
+          ## Fail the action if Terraform validate fails
+          exit 1
         fi
