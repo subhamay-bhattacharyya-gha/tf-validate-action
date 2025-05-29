@@ -54,6 +54,7 @@ runs:
       run: |
 
         set -e
+        terraform -init -input=false
         if terraform validate -no-color; then
           echo "✅ Terraform validation passed"
           echo "### ✅ Terraform validation passed" >> $GITHUB_STEP_SUMMARY
