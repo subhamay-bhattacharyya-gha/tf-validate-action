@@ -2,6 +2,12 @@ name: "Terraform Validate"
 description: A composite GitHub Action to check formatting and validate Terraform configuration.
 
 inputs:
+  release-tag:
+    description: 'Optional release tag to checkout'
+    required: false
+    type: string
+    default: ''
+
   terraform-dir:
     description: Directory containing Terraform code
     required: false
@@ -31,7 +37,14 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Checkout repo
+      id: checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.release-tag || github.ref_name }}   
+
     - name: Setup Terraform
+      id: setup-terraform
       uses: hashicorp/setup-terraform@v3
 
     - name: Compute Backend Key from Repository Name
