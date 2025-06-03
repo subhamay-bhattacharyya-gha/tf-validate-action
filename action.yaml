@@ -2,14 +2,33 @@ name: "Terraform Validate"
 description: A composite GitHub Action to check formatting and validate Terraform configuration.
 
 inputs:
-  working-directory:
+  release-tag:
+    description: 'Optional release tag to checkout'
+    required: false
+    type: string
+    default: ''
+
+  terraform-dir:
     description: Directory containing Terraform code
     required: false
-    default: "."
+    default: "tf"
+
+  s3-bucket:
+    description: "S3 bucket for Terraform backend"
+    required: true
+
+  s3-region:
+    description: "AWS region where the S3 bucket is located"
+    required: true
+
+  dynamodb-table:
+    description: "DynamoDB table name for state locking"
+    required: true
+
   soft-fail:
     description: Continue workflow even if validation fails
     required: false
-    default: "false"
+    default: "true"
 
 outputs:
   valid:
@@ -18,29 +37,54 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Checkout repo
+      id: checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.release-tag || github.ref_name }}   
+
     - name: Setup Terraform
+      id: setup-terraform
       uses: hashicorp/setup-terraform@v3
 
-    - name: Terraform Init
+    - name: Compute Backend Key from Repository Name
+      id: key
       shell: bash
+      working-directory: ${{ github.workspace }}/${{ inputs.terraform-dir }}
       run: |
-        cd "${{ inputs.working-directory }}"
-        terraform init -input=false
+        if [[ "${{ inputs.ci-pipeline }}" == "true" ]]; then
+          state_key="${{ github.repository }}/${{ github.sha }}/terraform.tfstate"
+        else
+          state_key="${{ github.repository }}/terraform.tfstate"
+        fi
+        echo "s3_key=$state_key" >> $GITHUB_OUTPUT
+
+    - name: Terraform Init with S3 Backend
+      id: tf-init
+      shell: bash
+      working-directory: ${{ github.workspace }}/${{ inputs.terraform-dir }}
+      run: |
+        terraform init -input=false \
+          -backend-config="bucket=${{ inputs.s3-bucket }}" \
+          -backend-config="key=${{ steps.key.outputs.s3_key }}" \
+          -backend-config="region=${{ inputs.s3-region }}" \
+          -backend-config="encrypt=true" \
+          -backend-config="dynamodb_table=${{ inputs.dynamodb-table }}"
 
     - name: Terraform FMT Check
-      id: fmt
+      id: fmt-check
       shell: bash
+      working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
-        cd "${{ inputs.working-directory }}"
-        set -e
+
         if terraform fmt -check -recursive; then
           echo "✅ Terraform FMT check passed"
           echo "### ✅ Terraform FMT check passed" >> $GITHUB_STEP_SUMMARY
         else
           echo "❌ Terraform code is not properly formatted"
-          echo "### ❌ Terraform FMT check failed" >> $GITHUB_STEP_SUMMARY
+          echo "### ❌ Terraform fmt check failed" >> $GITHUB_STEP_SUMMARY
           if [[ "${{ inputs.soft-fail }}" == "true" ]]; then
-            echo "::warning::Terraform FMT failed (soft fail enabled)"
+            echo "::warning::Terraform fmt check failed (soft fail enabled)"
           else
             exit 1
           fi
@@ -49,9 +93,9 @@ runs:
     - name: Terraform Validate
       id: validate
       shell: bash
+      working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
-        cd "${{ inputs.working-directory }}"
-        set -e
+
         if terraform validate -no-color; then
           echo "✅ Terraform validation passed"
           echo "### ✅ Terraform validation passed" >> $GITHUB_STEP_SUMMARY
@@ -60,9 +104,5 @@ runs:
           echo "❌ Terraform validation failed"
           echo "### ❌ Terraform validation failed" >> $GITHUB_STEP_SUMMARY
           echo "valid=false" >> $GITHUB_OUTPUT
-          if [[ "${{ inputs.soft-fail }}" == "true" ]]; then
-            echo "::warning::Terraform validate failed (soft fail enabled)"
-          else
-            exit 1
-          fi
+          exit 1
         fi
