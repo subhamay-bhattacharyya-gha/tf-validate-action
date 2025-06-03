@@ -28,7 +28,7 @@ inputs:
   soft-fail:
     description: Continue workflow even if validation fails
     required: false
-    default: "false"
+    default: "true"
 
 outputs:
   valid:
@@ -83,7 +83,7 @@ runs:
         else
           echo "❌ Terraform code is not properly formatted"
           echo "### ❌ Terraform fmt check failed" >> $GITHUB_STEP_SUMMARY
-          if [[ "${{ inputs.soft-fail }}" == "false" ]]; then
+          if [[ "${{ inputs.soft-fail }}" == "true" ]]; then
             echo "::warning::Terraform fmt check failed (soft fail enabled)"
           else
             exit 1
