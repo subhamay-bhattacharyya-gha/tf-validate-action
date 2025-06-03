@@ -83,7 +83,7 @@ runs:
         else
           echo "❌ Terraform code is not properly formatted"
           echo "### ❌ Terraform fmt check failed" >> $GITHUB_STEP_SUMMARY
-          if [[ "${{ inputs.soft-fail }}" == "true" ]]; then
+          if [[ "${{ inputs.soft-fail }}" == "false" ]]; then
             echo "::warning::Terraform fmt check failed (soft fail enabled)"
           else
             exit 1
