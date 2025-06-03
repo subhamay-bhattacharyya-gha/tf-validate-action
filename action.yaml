@@ -2,6 +2,11 @@ name: "Terraform Validate"
 description: A composite GitHub Action to check formatting and validate Terraform configuration.
 
 inputs:
+  terraform-dir:
+    description: Directory containing Terraform code
+    required: false
+    default: "tf"
+
   s3-bucket:
     description: "S3 bucket for Terraform backend"
     required: true
@@ -14,11 +19,6 @@ inputs:
     description: "DynamoDB table name for state locking"
     required: true
 
-  terraform-dir:
-    description: Directory containing Terraform code
-    required: false
-    default: "."
-    
   soft-fail:
     description: Continue workflow even if validation fails
     required: false
@@ -46,6 +46,7 @@ runs:
         echo "s3_key=$state_key" >> $GITHUB_OUTPUT
 
     - name: Terraform Init with S3 Backend
+      id: tf-init
       shell: bash
       working-directory: ${{ github.workspace }}/${{ inputs.terraform-dir }}
       run: |
@@ -57,11 +58,11 @@ runs:
           -backend-config="dynamodb_table=${{ inputs.dynamodb-table }}"
 
     - name: Terraform FMT Check
-      id: fmt
+      id: fmt-check
       shell: bash
       working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
-        set -e
+        # set -e
         if terraform fmt -check -recursive; then
           echo "✅ Terraform FMT check passed"
           echo "### ✅ Terraform FMT check passed" >> $GITHUB_STEP_SUMMARY
@@ -80,8 +81,8 @@ runs:
       shell: bash
       working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
-        set -e
-        terraform init -input=false
+        # set -e
+        # terraform init -input=false
         if terraform validate -no-color; then
           echo "✅ Terraform validation passed"
           echo "### ✅ Terraform validation passed" >> $GITHUB_STEP_SUMMARY
