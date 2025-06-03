@@ -50,6 +50,7 @@ runs:
     - name: Compute Backend Key from Repository Name
       id: key
       shell: bash
+      working-directory: ${{ github.workspace }}/${{ inputs.terraform-dir }}
       run: |
         if [[ "${{ inputs.ci-pipeline }}" == "true" ]]; then
           state_key="${{ github.repository }}/${{ github.sha }}/terraform.tfstate"
@@ -75,7 +76,7 @@ runs:
       shell: bash
       working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
-        # set -e
+
         if terraform fmt -check -recursive; then
           echo "✅ Terraform FMT check passed"
           echo "### ✅ Terraform FMT check passed" >> $GITHUB_STEP_SUMMARY
@@ -94,8 +95,7 @@ runs:
       shell: bash
       working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
-        # set -e
-        # terraform init -input=false
+
         if terraform validate -no-color; then
           echo "✅ Terraform validation passed"
           echo "### ✅ Terraform validation passed" >> $GITHUB_STEP_SUMMARY
