@@ -1,3 +1,19 @@
+## [1.0.2](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/compare/v1.0.1...v1.0.2) (2025-06-03)
+
+
+### Bug Fixes
+
+* Add missing terraform init command before validation step ([b0f71ea](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/b0f71eac46f5f993f383835fa3bd7afe83a3c008))
+* Add release tag input to Terraform Validate action and update checkout step ([3cec108](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/3cec108813b78133877ad1e6f4976163f3c1d4b9))
+* Enhance Terraform Init step with S3 backend configuration and input parameters ([71d075b](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/71d075bdad3d34951ac050e109af63ac76f63fb6))
+* Ensure working directory is set for backend key computation and clean up Terraform validation step ([d29d047](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/d29d0473caa66542ff0cdf7306a955cf019fd383))
+* Improve working directory handling in Terraform Init step ([b099096](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/b0990968bcb52f907ffddd56e027f23cd7d31f01))
+* Refactor input parameters in Terraform Validate action and update step IDs ([de75019](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/de7501959f5f309771b2832d3888dcc45ae64082))
+* Update input parameter name and improve working directory handling in Terraform action ([cd77070](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/cd77070575fd895adda0e1f96236ea5d0ee3fa94))
+* Update soft-fail condition in Terraform fmt check to exit on failure ([3eaa98f](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/3eaa98fe7758a122bac2a47011abab5ea66eebf5))
+* Update soft-fail default to true in Terraform fmt check ([fcde84f](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/fcde84fef113899a4266ebfc9022965ceefa983a))
+* Update working directory handling in Terraform FMT and Validate steps ([210e970](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/210e970d0fabd24b1ef55b6af7fd0db64d8e3c63))
+
 ## [1.0.1](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/compare/v1.0.0...v1.0.1) (2025-05-21)
 
 
