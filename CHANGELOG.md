@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/compare/v1.0.3...v1.0.4) (2025-06-18)
+
+
+### Bug Fixes
+
+* Correct string formatting in action.yaml for consistency ([be7c344](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/be7c344f8ff145d11b30e78eff7b1a0a168a6f7e))
+
 ## [1.0.3](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/compare/v1.0.2...v1.0.3) (2025-06-18)
 
 
