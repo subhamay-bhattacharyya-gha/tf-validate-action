@@ -1,5 +1,5 @@
 name: "Terraform Validation and Formatting Checks"
-description: A composite GitHub Action that performs Terraform format (fmt) and configuration validation.
+description: "A composite GitHub Action that performs Terraform format (fmt) and configuration validation."
 
 inputs:
   terraform-dir:
@@ -12,7 +12,7 @@ inputs:
     description: "Git release tag to check out. If omitted, the latest commit on the default branch is used."
     required: false
     type: string
-    default: ''
+    default: ""
 
   ci-pipeline:
     description: "Set to 'true' to include the commit SHA in the Terraform state key (suitable for CI/CD). Use 'false' for static state keys."
