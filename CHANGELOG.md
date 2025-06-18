@@ -1,3 +1,11 @@
+## [1.0.3](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/compare/v1.0.2...v1.0.3) (2025-06-18)
+
+
+### Bug Fixes
+
+* Update action and README for improved clarity on Terraform validation and formatting ([d47cf61](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/d47cf61ac2c491f8d511cc2695548eaeecb31e04))
+* Update README to use string values for ci-pipeline and soft-fail inputs ([bf3e481](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/bf3e48142a3951d1fc062601b95319d2d3f38715))
+
 ## [1.0.2](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/compare/v1.0.1...v1.0.2) (2025-06-03)
 
 
