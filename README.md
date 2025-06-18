@@ -62,8 +62,8 @@ jobs:
           terraform-dir: tf
           s3-bucket: your-terraform-backend-bucket
           s3-region: us-east-1
-          ci-pipeline: true
-          soft-fail: false
+          ci-pipeline: "true"
+          soft-fail: "false"
 
       - name: Display Status
         run: |
