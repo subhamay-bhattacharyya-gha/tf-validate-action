@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/compare/v1.0.4...v1.1.0) (2025-12-25)
+
+
+### Bug Fixes
+
+* add a blank line for better readability in release workflow ([fff0860](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/fff086059d2b4a31a7585b34b71d8d62f746defd))
+
+
+### Features
+
+* **action:** Add input logging and directory diagnostics ([1e13883](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/1e1388356c995903c5310afe22993f27ef6e9618))
+* Simplify Terraform validation to remove backend state requirements ([5690853](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/commit/5690853bc3724563eba6a82113d3083fed3b30a4))
+
 ## [1.0.4](https://github.com/subhamay-bhattacharyya-gha/tf-validate-action/compare/v1.0.3...v1.0.4) (2025-06-18)
 
 
