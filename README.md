@@ -78,7 +78,7 @@ jobs:
       - name: Run Terraform Validate Action
         uses: subhamay-bhattacharyya-gha/tf-validate-action@main
         with:
-          terraform-dir: infrastructure
+          terraform-dir: tf
           release-tag: v1.0.0
           soft-fail: "true"
 ```
