@@ -22,7 +22,7 @@ This composite GitHub Action performs the following tasks for Terraform code qua
 
 | Name             | Description                                                                 | Required | Default   |
 |------------------|-----------------------------------------------------------------------------|----------|-----------|
-| `terraform-dir`  | Relative path to the directory containing Terraform configuration files     | No       | `tf`      |
+| `tf-config-path` | Relative path from the repository root to the Terraform configuration directory. This is where your main.tf, variables.tf, and other Terraform files are located. | No       | `tf`      |
 | `release-tag`    | Git release tag to check out. If omitted, the current branch is used        | No       | `''`      |
 | `soft-fail`      | Set to `'true'` to continue the workflow even if formatting or validation fails | No   | `true`    |
 
@@ -60,7 +60,7 @@ jobs:
         id: tf-validate
         uses: subhamay-bhattacharyya-gha/tf-validate-action@main
         with:
-          terraform-dir: tf
+          tf-config-path: tf
           soft-fail: "false"
 
       - name: Display Status
@@ -78,7 +78,7 @@ jobs:
       - name: Run Terraform Validate Action
         uses: subhamay-bhattacharyya-gha/tf-validate-action@main
         with:
-          terraform-dir: tf
+          tf-config-path: infrastructure
           release-tag: v1.0.0
           soft-fail: "true"
 ```
