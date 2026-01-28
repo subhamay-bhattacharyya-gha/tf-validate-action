@@ -74,13 +74,6 @@ runs:
       shell: bash
       working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
       run: |
-        echo "📁 Current working directory: $(pwd)"
-        echo "📂 Directory contents (recursive):"
-        find . -type f -name "*.tf" -o -name "*.tfvars" -o -name "*.hcl" | sort
-        echo ""
-        echo "📋 All files and directories:"
-        ls -laR
-        echo "-------------------------------------------"
         if terraform fmt -check -recursive; then
           echo "✅ Terraform FMT check passed"
           echo "### ✅ Terraform FMT check passed" >> $GITHUB_STEP_SUMMARY
