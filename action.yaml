@@ -2,8 +2,8 @@ name: "Terraform Validation and Formatting Checks"
 description: "A composite GitHub Action that performs Terraform format (fmt) and configuration validation."
 
 inputs:
-  terraform-dir:
-    description: "Relative path to the directory containing Terraform configuration files (e.g., 'tf', 'infrastructure')."
+  tf-config-path:
+    description: "Relative path from the repository root to the Terraform configuration directory. This is where your main.tf, variables.tf, and other Terraform files are located."
     required: false
     type: string
     default: "tf"
@@ -34,12 +34,12 @@ runs:
         echo "### 📋 Action Inputs" >> $GITHUB_STEP_SUMMARY
         echo "| Input | Value |" >> $GITHUB_STEP_SUMMARY
         echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
-        echo "| terraform-dir | ${{ inputs.terraform-dir }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| tf-config-path | ${{ inputs.tf-config-path }} |" >> $GITHUB_STEP_SUMMARY
         echo "| release-tag | ${{ inputs.release-tag }} |" >> $GITHUB_STEP_SUMMARY
         echo "| soft-fail | ${{ inputs.soft-fail }} |" >> $GITHUB_STEP_SUMMARY
         echo ""
         echo "🔧 Terraform Validate Action - Input Parameters:"
-        echo "  terraform-dir: ${{ inputs.terraform-dir }}"
+        echo "  tf-config-path: ${{ inputs.tf-config-path }}"
         echo "  release-tag: ${{ inputs.release-tag }}"
         echo "  soft-fail: ${{ inputs.soft-fail }}"
 
@@ -66,13 +66,13 @@ runs:
     - name: Initialize Terraform
       id: terraform-init
       shell: bash
-      working-directory: ${{ github.workspace }}/${{ inputs.terraform-dir }}
+      working-directory: ${{ github.workspace }}/${{ inputs.tf-config-path }}
       run: terraform init -backend=false
 
     - name: Check Terraform Formatting (FMT)
       id: terraform-fmt-check
       shell: bash
-      working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
+      working-directory: "${{ github.workspace }}/${{ inputs.tf-config-path }}"
       run: |
         if terraform fmt -check -recursive; then
           echo "✅ Terraform FMT check passed"
@@ -90,7 +90,7 @@ runs:
     - name: Validate Terraform Configuration
       id: terraform-validate
       shell: bash
-      working-directory: "${{ github.workspace }}/${{ inputs.terraform-dir }}"
+      working-directory: "${{ github.workspace }}/${{ inputs.tf-config-path }}"
       run: |
         if terraform validate -no-color; then
           echo "✅ Terraform validation passed"
