@@ -9,6 +9,7 @@ Validate and format Terraform configuration in your CI pipeline using this GitHu
 ## 📘 Description
 
 This composite GitHub Action performs the following tasks for Terraform code quality:
+
 - Checks out the repository at a specific release tag or current branch
 - Initializes Terraform without backend configuration (downloads providers only)
 - Checks code formatting (`terraform fmt`)
