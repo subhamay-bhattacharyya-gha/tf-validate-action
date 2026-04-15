@@ -69,7 +69,8 @@ runs:
       shell: bash
       working-directory: "${{ github.workspace }}/${{ inputs.tf-config-path }}"
       run: |
-        echo "## Terraform Validation - Summary" >> $GITHUB_STEP_SUMMARY
+        echo "#### Terraform Validation - Summary" >> $GITHUB_STEP_SUMMARY
+        echo "---" >> $GITHUB_STEP_SUMMARY
         if terraform fmt -check -recursive; then
           echo "✅ Terraform FMT check passed"
           echo "### ✅ Terraform FMT check passed" >> $GITHUB_STEP_SUMMARY
