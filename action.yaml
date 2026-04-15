@@ -31,17 +31,12 @@ runs:
       id: print-inputs
       shell: bash
       run: |
-        echo "### 📋 Action Inputs" >> $GITHUB_STEP_SUMMARY
-        echo "| Input | Value |" >> $GITHUB_STEP_SUMMARY
-        echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
-        echo "| tf-config-path | ${{ inputs.tf-config-path }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| release-tag | ${{ inputs.release-tag }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| soft-fail | ${{ inputs.soft-fail }} |" >> $GITHUB_STEP_SUMMARY
-        echo ""
-        echo "🔧 Terraform Validate Action - Input Parameters:"
-        echo "  tf-config-path: ${{ inputs.tf-config-path }}"
-        echo "  release-tag: ${{ inputs.release-tag }}"
-        echo "  soft-fail: ${{ inputs.soft-fail }}"
+        echo "📋 Action Inputs"
+        echo "| Input | Value |"
+        echo "|-------|-------|"
+        echo "| tf-config-path | ${{ inputs.tf-config-path }} |"
+        echo "| release-tag | ${{ inputs.release-tag }} |"
+        echo "| soft-fail | ${{ inputs.soft-fail }} |"
 
     - name: Set Checkout Ref
       id: set-ref
@@ -74,6 +69,7 @@ runs:
       shell: bash
       working-directory: "${{ github.workspace }}/${{ inputs.tf-config-path }}"
       run: |
+        echo "## Validate Summary" >> $GITHUB_STEP_SUMMARY
         if terraform fmt -check -recursive; then
           echo "✅ Terraform FMT check passed"
           echo "### ✅ Terraform FMT check passed" >> $GITHUB_STEP_SUMMARY
